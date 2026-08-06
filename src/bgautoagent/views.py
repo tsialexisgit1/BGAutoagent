@@ -362,6 +362,26 @@ def _ranking_rows(rows, other_ids) -> str:
     return "".join(out)
 
 
+def opportunity_level(a):
+    """A triage signal: how promising, before the reliability gate has its say.
+
+    Deliberately separate from the verdict. Today every verdict comes out
+    NON DÉCISIONNEL because official tables are missing, so a verdict column
+    would tell you nothing — yet the economics still differ from one car to the
+    next, and that difference is what you need in a list.
+
+    Le potentiel trie ; le verdict décide.
+    """
+    o = a.outcome
+    if not o.meets_all_targets:
+        return ("Bas", "v-reject")
+    if a.score.total >= 80:
+        return ("Élevé", "v-buy")
+    if a.score.total >= 70:
+        return ("Moyen", "v-negotiate")
+    return ("Bas", "v-reject")
+
+
 def page_opportunities(analyses) -> str:
     head = header(wf.BY_KEY["opportunites"])
 
@@ -409,12 +429,20 @@ Rien ici ne provient d'un site réel.</div></div>
     rows = []
     for a in by_year:
         s = src.get(a.entry.source_key)
+        level, level_cls = opportunity_level(a)
+        done = len([c for c in a.entry.confirmed if c in wf.VEHICLE_ORDER])
+        total = len(wf.VEHICLE_ORDER)
+        spread = euro(a.entry.greek_market_price) - euro(a.entry.asking_price)
         rows.append(
-            "<tr><td><a href='/?step=marche&id={i}'><span class='name'>{n}</span></a>"
-            "{sim}</td><td>{srcname}</td>"
-            "<td><span class='badge {tc}'>{t}</span></td>"
-            "<td class='num'>{p}</td>"
-            "<td>{steps}</td>"
+            "<tr><td><a href='/?step=marche&id={i}'><span class='name'>{n}</span></a>{sim}<br>"
+            "<span class='mark'>{srcname}</span> "
+            "<span class='badge {tc}'>{t}</span></td>"
+            "<td class='num'>{year}</td>"
+            "<td class='num'>{km}</td>"
+            "<td class='num'>{pbe}</td>"
+            "<td class='num'>{pgr}<br><span class='mark'>{spread}</span></td>"
+            "<td><span class='badge {lc}'>{lvl}</span></td>"
+            "<td class='num'>{done}/{total}</td>"
             "<td><form method='post' action='/delete'><input type='hidden' name='id' value='{i}'>"
             "<button class='danger' type='submit'>suppr.</button></form></td></tr>".format(
                 i=esc(a.entry.id), n=esc(a.name),
@@ -422,19 +450,33 @@ Rien ici ne provient d'un site réel.</div></div>
                 srcname=esc(s.name) if s else "Saisie manuelle",
                 tc="b2b" if a.entry.source_type == "b2b" else "c2c",
                 t="B2B" if a.entry.source_type == "b2b" else "C2C",
-                p=esc(format_eur(euro(a.entry.asking_price))),
-                steps="{}/{}".format(
-                    len([c for c in a.entry.confirmed if c in wf.VEHICLE_ORDER]),
-                    len(wf.VEHICLE_ORDER),
-                ),
+                year=esc(a.entry.first_registration[:4]),
+                km="{} km".format("{:,}".format(a.entry.mileage_km).replace(",", " ")),
+                pbe=esc(format_eur(euro(a.entry.asking_price))),
+                pgr=esc(format_eur(euro(a.entry.greek_market_price))),
+                spread=("+" if spread >= 0 else "") + esc(format_eur(spread)),
+                lc=level_cls, lvl=esc(level),
+                done=done, total=total,
             )
         )
 
     listing = """
-<div class="panel"><div class="panel-h">Opportunités ({n})</div>
-<div class="scroll"><table><thead><tr><th>Véhicule</th><th>Source</th><th>Vendeur</th>
-<th style="text-align:right">Prix</th><th>Étapes</th><th></th></tr></thead>
-<tbody>{rows}</tbody></table></div></div>
+<div class="panel"><div class="panel-h"><span>Opportunités ({n})</span>
+<span class="mark">triées par rendement annuel</span></div>
+<div class="scroll"><table><thead><tr>
+<th>Véhicule</th><th style="text-align:right">Année</th><th style="text-align:right">Km</th>
+<th style="text-align:right">Prix Belgique</th><th style="text-align:right">Marché Grèce</th>
+<th>Potentiel</th><th style="text-align:right">Avancement</th><th></th></tr></thead>
+<tbody>{rows}</tbody></table></div>
+<div class="nd"><b>Rien n'est filtré ici.</b> Une voiture dont le marché grec serait
+inférieur au prix belge apparaîtrait quand même, avec une marge négative — c'est à
+cela que sert la colonne <b>Potentiel</b>.<br>
+Le <b>potentiel</b> trie, il ne décide pas : il regarde l'économie de l'affaire
+(objectifs atteints et BG Score) sans tenir compte de la fiabilité des données.
+Le <b>verdict</b>, lui, tient compte des deux — et c'est lui qui autorise ou non
+l'achat, à l'étape 6.<br>
+L'<b>avancement</b> compte les étapes du parcours véhicule confirmées, sur quatre :
+marché grec, calcul, score, décision.</div></div>
 """.format(n=len(analyses), rows="".join(rows))
 
     return head + collect + rankings + listing + opportunity_form()
