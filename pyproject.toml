@@ -1,0 +1,22 @@
+[project]
+name = "bgautoagent"
+version = "0.1.0"
+description = "Decision engine for buying vehicles in Belgium to resell in Greece"
+requires-python = ">=3.9"
+
+# No third-party dependencies, deliberately.
+#
+# This package answers one question — buy or not — on purchases worth thousands
+# of euros each. Every figure it produces must be reproducible years later and
+# auditable line by line. A dependency-free engine can be read in full, cannot
+# drift under it, and runs anywhere.
+#
+# Collection, storage and interface will have dependencies. The engine does not.
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
