@@ -50,6 +50,33 @@ class Entry:
     note: str = ""
     created_at: str = ""
 
+    #: Which catalogue source this came from; empty when entered by hand.
+    source_key: str = ""
+    #: True when produced by the simulated collector rather than observed.
+    #: Kept explicit so a placeholder can never be mistaken for a real listing.
+    simulated: bool = False
+    #: Steps of the process the user has confirmed, in order of the workflow.
+    #: A step is reachable only once the one before it has been confirmed.
+    confirmed: List[str] = field(default_factory=list)
+
+    def has_confirmed(self, step: str) -> bool:
+        return step in self.confirmed
+
+    def confirm(self, step: str) -> None:
+        if step not in self.confirmed:
+            self.confirmed.append(step)
+
+    def unconfirm_from(self, step: str, order: List[str]) -> None:
+        """Undo a step and everything after it.
+
+        Reopening an earlier stage invalidates what followed: the figures were
+        derived from what is being changed.
+        """
+        if step not in order:
+            return
+        cut = order.index(step)
+        self.confirmed = [s for s in self.confirmed if s in order[:cut]]
+
     def to_json(self) -> Dict[str, Any]:
         return asdict(self)
 
