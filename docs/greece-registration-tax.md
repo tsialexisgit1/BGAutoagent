@@ -28,12 +28,75 @@ La taxe d'immatriculation (*τέλος ταξινόμησης*) se calcule en tr
 
 | Élément | Valeur | Fiabilité |
 |---|---|---|
-| Assiette | prix d'achat + assurance + transport | ~ |
+| Assiette | prix de gros − dépréciation + assurance + transport | ~ |
 | Taux de base | table par cylindrée × norme Euro | ✗ **manquant** |
 | Ajustement CO₂ | voir table ci-dessous | ~ |
-| Dépréciation par âge | table officielle | ✗ **manquant — le plus critique** |
+| Dépréciation par âge | **table trouvée, voir ci-dessous** | ~ |
+| Dépréciation kilométrique | réduction additionnelle selon le kilométrage | ✗ **manquant** |
 | Charge totale, essence/diesel | 30 à 50 % de la valeur du véhicule | ? |
 | TVA | 24 % ; véhicule d'occasion UE avec TVA déjà acquittée : non redue en principe | ~ |
+
+**Formule** : `(prix de gros − dépréciation + assurance + transport) × taux` ~
+
+## Dépréciation par âge et carrosserie ~
+
+Source : décision **ΔΕΦΚΦ 1192035 ΕΞ 2017**, publiée au **ΦΕΚ Β' 4618 du 28/12/2017**,
+en vigueur depuis le 7 janvier 2018. Reproduite depuis une source secondaire grecque.
+
+> ⚠️ **Table de 2017.** Elle peut avoir été modifiée depuis. À confirmer sur le texte officiel
+> avant toute mise en production — c'est la vérification n°1.
+
+Pourcentage de **réduction de la valeur taxable** — plus le pourcentage est élevé, moins la taxe est due.
+
+| Âge (ans) | 4×4 / SUV | Compacte | **Berline** | Cabriolet | Coupé / Roadster | Monospace |
+|---|---|---|---|---|---|---|
+| 0,5 | 11 % | 9 % | 15 % | 11 % | 12 % | 9 % |
+| 1 | 22 % | 19 % | 30 % | 22 % | 25 % | 19 % |
+| 1,5 | 25 % | 24 % | 33 % | 26 % | 25 % | 23 % |
+| 2 | 29 % | 28 % | 36 % | 30 % | 29 % | 27 % |
+| 2,5 | 35 % | 32 % | 40 % | 33 % | 32 % | 33 % |
+| 3 | 37 % | 37 % | 43 % | 36 % | 36 % | 36 % |
+| 3,5 | 44 % | 43 % | 50 % | 42 % | 41 % | 43 % |
+| 4 | 50 % | 49 % | 57 % | 48 % | 47 % | 49 % |
+| 4,5 | 56 % | 55 % | 64 % | 54 % | 53 % | 55 % |
+| 5 | 62 % | 61 % | **72 %** | 60 % | 59 % | 61 % |
+| 5,5 | 66 % | 64 % | 74 % | 64 % | 63 % | 64 % |
+| 6 | 68 % | 67 % | 76 % | 67 % | 66 % | 67 % |
+| 6,5 | 71 % | 70 % | 78 % | 69 % | 68 % | 70 % |
+| 7 | 73 % | 72 % | 80 % | 72 % | 71 % | 72 % |
+| 7,5 | 75 % | 74 % | 81 % | 74 % | 73 % | 75 % |
+| 8 | 77 % | 76 % | 83 % | 76 % | 75 % | 77 % |
+| 8,5 | 79 % | 78 % | 84 % | 78 % | 77 % | 78 % |
+| 9 | 80 % | 80 % | 85 % | 79 % | 79 % | 80 % |
+| 9,5 | 82 % | 81 % | 86 % | 81 % | 80 % | 82 % |
+| 10 | 83 % | 83 % | 87 % | 82 % | 82 % | 83 % |
+| 10,5 | 84 % | 83 % | 88 % | 83 % | 83 % | 84 % |
+| 11 | 85 % | 84 % | 89 % | 84 % | 84 % | 85 % |
+| 11,5 | 86 % | 85 % | 89 % | 85 % | 85 % | 86 % |
+| 12 | 87 % | 86 % | 90 % | 86 % | 86 % | 87 % |
+| 12,5 | 88 % | 87 % | 90 % | 87 % | 87 % | 88 % |
+| 13 | 88 % | 88 % | 90 % | 88 % | 87 % | 89 % |
+| 13,5 | 89 % | 89 % | 91 % | 88 % | 88 % | 89 % |
+| 14 | 90 % | 89 % | 91 % | 89 % | 89 % | 90 % |
+| 14,5 | 90 % | 90 % | 91 % | 89 % | 89 % | 91 % |
+| 15 | 90 % | 90 % | 91 % | 90 % | 89 % | 91 % |
+| 15,5 | 90 % | 90 % | 91 % | 90 % | 89 % | 91 % |
+| 16 et + | 95 % | 95 % | 95 % | 95 % | 95 % | 95 % |
+
+### Deux observations commerciales
+
+**La carrosserie est un levier fiscal.** À 5 ans, une berline obtient 72 % de réduction
+contre 61 % pour une compacte — onze points d'assiette. Le type de carrosserie doit donc
+être un champ de sélection, pas une donnée descriptive.
+
+**Le seuil de 16 ans.** Le saut à 95 % pour toutes les carrosseries crée une discontinuité
+exploitable, mais qui vise un segment très différent du vôtre.
+
+### Une réserve importante
+
+La dépréciation dépend aussi du **kilométrage**, en plus de l'âge et de la carrosserie.
+Cette seconde table n'a pas été retrouvée. ✗ Sans elle, le calcul reste incomplet —
+un véhicule très kilométré sera surtaxé par notre approximation.
 
 ## Ajustement CO₂ — véhicules immatriculés dans l'UE depuis 2021 (WLTP)
 
@@ -65,10 +128,11 @@ et non à la date d'achat, et d'alerter lorsqu'une opération chevauche l'éché
 
 ## Ce qui manque, par ordre d'importance
 
-1. **La table de dépréciation par âge** ✗ — sans elle, aucun calcul sur de l'occasion n'est possible. C'est le premier document à récupérer.
-2. **La table des taux de base** (cylindrée × norme Euro) ✗
-3. La tranche CO₂ 130–156 g/km ✗
-4. Le traitement exact de la TVA sur l'occasion intracommunautaire selon le régime du vendeur — marge ou TVA déductible ✗
+1. **La table des taux de base** (cylindrée × norme Euro) ✗ — c'est le multiplicateur final ; sans lui on connaît l'assiette mais pas la taxe.
+2. **La table de dépréciation kilométrique** ✗ — complète celle de l'âge.
+3. **Confirmation que la table de dépréciation de 2017 est toujours en vigueur** — huit ans se sont écoulés.
+4. La tranche CO₂ 130–156 g/km ✗
+5. Le traitement exact de la TVA sur l'occasion intracommunautaire selon le régime du vendeur — marge ou TVA déductible ✗ (rejoint la distinction B2B/C2C)
 
 ## Pourquoi ces tables sont absentes
 
